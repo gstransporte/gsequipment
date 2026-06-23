@@ -633,6 +633,66 @@ img {
 }
 
 /* =========================================
+   LIGHTBOX / VISOR DE IMÁGENES (CLICK)
+   ========================================= */
+#image-modal {
+  display: flex;
+  position: fixed;
+  z-index: 9999; /* Por encima de todo */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(11, 17, 32, 0.9); /* Fondo oscuro transparente */
+  backdrop-filter: blur(5px); /* Desenfoque elegante */
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+#image-modal.modal-hidden {
+  display: none;
+  opacity: 0;
+}
+
+/* La imagen expandida */
+.modal-content {
+  max-width: 90%;
+  max-height: 85vh;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+  object-fit: contain;
+}
+
+#image-modal:not(.modal-hidden) .modal-content {
+  transform: scale(1);
+}
+
+/* El botón de la X para cerrar */
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  color: white;
+  font-size: 45px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: var(--color-red);
+}
+
+/* Agrega el cursor de "Lupa" a las fotos del catálogo */
+.product-img img {
+  cursor: zoom-in;
+}
+
+/* =========================================
    RESPONSIVE MÓVIL Y TABLET
    ========================================= */
 @media (max-width: 992px) {

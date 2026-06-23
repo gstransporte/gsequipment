@@ -82,4 +82,42 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = `mailto:ventas@transportegs.com?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
     });
   }
+
+  // =========================================
+  // 4. LIGHTBOX DE IMÁGENES (EXPANDIR AL CLIC)
+  // =========================================
+  const modal = document.getElementById("image-modal");
+  const modalImg = document.getElementById("modal-img");
+  const closeBtn = document.querySelector(".modal-close");
+  // Selecciona todas las imágenes dentro de las tarjetas de chasis
+  const expandableImages = document.querySelectorAll(".product-img img");
+
+  if (modal && modalImg) {
+    // Al dar clic a una foto, quitar la clase oculta y poner la fuente de la imagen
+    expandableImages.forEach((img) => {
+      img.addEventListener("click", () => {
+        modal.classList.remove("modal-hidden");
+        modalImg.src = img.src;
+      });
+    });
+
+    // Cerrar al hacer clic en la "X"
+    closeBtn.addEventListener("click", () => {
+      modal.classList.add("modal-hidden");
+    });
+
+    // Cerrar al hacer clic en lo oscuro (fuera de la imagen)
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.add("modal-hidden");
+      }
+    });
+
+    // Cerrar al presionar la tecla "Escape" en la computadora
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !modal.classList.contains("modal-hidden")) {
+        modal.classList.add("modal-hidden");
+      }
+    });
+  }
 });
