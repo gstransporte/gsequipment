@@ -1,201 +1,85 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // =========================
-  // Configuración WhatsApp
-  // =========================
-  const WHATSAPP_NUMBER = '50763794292';
-  function getWhatsAppLink(message = '') {
-    const base = `https://wa.me/${WHATSAPP_NUMBER}`;
-    return message ? `${base}?text=${encodeURIComponent(message)}` : base;
-  }
-  document.querySelectorAll('[data-whatsapp]').forEach(el => {
-    const msg = el.dataset.whatsapp || '';
-    el.setAttribute('href', getWhatsAppLink(msg));
-  });
+document.addEventListener("DOMContentLoaded", () => {
+  // 1. ANIMACIÓN REVEAL
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: "0px 0px -50px 0px",
+  };
 
-  // =========================
-  // Menú móvil drop-down
-  // =========================
-  const hamb = document.querySelector('.hamb');
-  const drop = document.getElementById('navDrop');
-  function setOpen(open) {
-    if (!drop || !hamb) return;
-    drop.classList.toggle('open', open);
-    hamb.setAttribute('aria-expanded', open ? 'true' : 'false');
-    drop.setAttribute('aria-hidden', open ? 'false' : 'true');
-    document.documentElement.classList.toggle('menu-open', open);
-  }
-  hamb?.addEventListener('click', () => setOpen(!drop.classList.contains('open')));
-  drop?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
-  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
-
-  // =========================
-  // Reveal on scroll
-  // =========================
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      if (e.isIntersecting) {
-        e.target.classList.add('show');
-        io.unobserve(e.target);
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("show");
+        observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  }, observerOptions);
 
-  // =========================
-  // Formulario (mailto)
-  // =========================
-  const form = document.getElementById('form');
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(form).entries());
-      if (!data.nombre || !data.correo) {
-        alert('Por favor complete nombre y correo.');
-        return;
-      }
-      const subject = encodeURIComponent(`Solicitud de transporte — ${data.empresa || 'Particular'}`);
-      const body = encodeURIComponent(
-        `Nombre: ${data.nombre}
-Empresa: ${data.empresa || '-'}
-Teléfono: ${data.telefono || '-'}
-Correo: ${data.correo}
-Servicio: ${data.servicio}
-
-Mensaje:
-${data.mensaje || ''}`
-      );
-      window.location.href = `mailto:transpgs@hotmail.es?subject=${subject}&body=${body}`;
-    });
-  }
-
-  // =========================
-  // Año en footer
-  // =========================
-  const year = document.getElementById('year');
-  if (year) year.textContent = new Date().getFullYear();
-
-  // =========================
-  // Carrusel: navegación con teclado
-  // =========================
-  document.querySelectorAll('.carousel-track').forEach(track => {
-    track.setAttribute('tabindex', '0');
-    track.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') track.scrollBy({ left: 300, behavior: 'smooth' });
-      if (e.key === 'ArrowLeft') track.scrollBy({ left: -300, behavior: 'smooth' });
-    });
+  document.querySelectorAll(".reveal").forEach((el) => {
+    observer.observe(el);
   });
 
-  // === Carrusel de clientes infinito ===
-  const container = document.querySelector('.clientes-carousel');
-  const track = document.getElementById('clientesTrack');
+  // 2. MENÚ MÓVIL (Toggle de la hamburguesa vectorial)
+  const menuToggle = document.getElementById("menu-toggle");
+  const navMenu = document.getElementById("nav-menu");
 
-  if (container && track) {
-    const SPEED_PX_PER_SEC = 50;
+  if (menuToggle && navMenu) {
+    menuToggle.addEventListener("click", () => {
+      navMenu.classList.toggle("active");
+    });
 
-    function imagesReady(node) {
-      const imgs = Array.from(node.querySelectorAll('img'));
-      return Promise.all(imgs.map(img => {
-        if (img.complete) return Promise.resolve();
-        return new Promise(res => img.addEventListener('load', res, { once: true }));
-      }));
-    }
-
-    function measureSetWidth(nodes) {
-      let w = 0;
-      nodes.forEach(el => {
-        const cs = getComputedStyle(el);
-        w += el.getBoundingClientRect().width + parseFloat(cs.marginRight || '0');
+    // Cerrar menú al tocar un enlace
+    navMenu.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        navMenu.classList.remove("active");
       });
-      return w;
-    }
-
-    async function setup() {
-      track.style.removeProperty('--clientes-distance');
-      track.style.removeProperty('--clientes-duration');
-
-      // conservar solo el set original
-      const originals = Array.from(track.querySelectorAll('img')).filter(i => !i.dataset.clone);
-      track.innerHTML = '';
-      originals.forEach(i => track.appendChild(i));
-
-      // esperar a que carguen las imágenes para medir bien
-      await imagesReady(track);
-
-      const firstSetWidth = measureSetWidth(originals);
-      const needTotal = firstSetWidth + container.clientWidth;
-
-      // clonar hasta cubrir
-      while (track.scrollWidth < needTotal && originals.length) {
-        originals.forEach(img => {
-          const clone = img.cloneNode(true);
-          clone.dataset.clone = '1';
-          track.appendChild(clone);
-        });
-      }
-
-      const duration = firstSetWidth / SPEED_PX_PER_SEC;
-      track.style.setProperty('--clientes-distance', firstSetWidth + 'px');
-      track.style.setProperty('--clientes-duration', duration + 's');
-    }
-
-    // inicial y on-resize
-    setup();
-    let t;
-    window.addEventListener('resize', () => {
-      clearTimeout(t);
-      t = setTimeout(setup, 120);
     });
   }
 
-  document.querySelectorAll('.carousel.gallery').forEach(gal => {
-    const track = gal.querySelector('.carousel-track');
-    const slides = Array.from(track.querySelectorAll('.slide'));
-    const dotsBox = gal.querySelector('.carousel-dots');
+  // 3. FORMULARIO DUAL
+  const btnWhatsApp = document.getElementById("btn-wa");
+  const btnEmail = document.getElementById("btn-email");
 
-    // crear dots
-    slides.forEach((_, i) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.addEventListener('click', () => goTo(i));
-      dotsBox.appendChild(b);
-    });
+  function obtenerDatosForm() {
+    const nombre = document.getElementById("eq_nombre").value.trim();
+    const empresa =
+      document.getElementById("eq_empresa").value.trim() || "Particular";
+    const telefono = document.getElementById("eq_telefono").value.trim();
+    const pais = document.getElementById("eq_pais").value.trim();
+    const tipo = document.getElementById("eq_tipo").value;
+    const cantidad = document.getElementById("eq_cantidad").value.trim();
 
-    let idx = 0, timer = null;
-    function updateDots() {
-      dotsBox.querySelectorAll('button').forEach((b, i) =>
-        b.setAttribute('aria-current', i === idx ? 'true' : 'false'));
+    if (!nombre || !telefono || !pais || !cantidad) {
+      alert(
+        "Por favor complete los campos obligatorios: Nombre, Teléfono, País y Cantidad.",
+      );
+      return null;
     }
-    function goTo(i) {
-      idx = (i + slides.length) % slides.length;
-      const slide = slides[idx];
-      const left = slide.offsetLeft - (track.clientWidth - slide.clientWidth) / 2;
-      track.scrollTo({ left, behavior: 'smooth' });
-      updateDots();
-    }
-    function next() { goTo(idx + 1); }
 
-    // autoplay (pausa al interactuar)
-    const interval = parseInt(gal.dataset.interval || '3800', 10);
-    function start() { if (!gal.dataset.autoplay) return; stop(); timer = setInterval(next, interval); }
-    function stop() { if (timer) clearInterval(timer); timer = null; }
+    return { nombre, empresa, telefono, pais, tipo, cantidad };
+  }
 
-    gal.addEventListener('mouseenter', stop);
-    gal.addEventListener('mouseleave', start);
-    gal.addEventListener('touchstart', stop, { passive: true });
-    gal.addEventListener('touchend', start, { passive: true });
+  if (btnWhatsApp) {
+    btnWhatsApp.addEventListener("click", () => {
+      const datos = obtenerDatosForm();
+      if (!datos) return;
 
-    // sync índice al hacer scroll manual
-    let t; track.addEventListener('scroll', () => {
-      clearTimeout(t);
-      t = setTimeout(() => {
-        const pos = track.scrollLeft + track.clientWidth * 0.5;
-        idx = slides.findIndex(s => s.offsetLeft <= pos && s.offsetLeft + s.clientWidth > pos);
-        updateDots();
-      }, 100);
+      const msg = `*Solicitud de Cotización — GS Equipment*\n\n👤 *Nombre:* ${datos.nombre}\n🏢 *Empresa:* ${datos.empresa}\n📞 *Teléfono:* ${datos.telefono}\n🌎 *País:* ${datos.pais}\n📦 *Equipo:* ${datos.tipo}\n🔢 *Cantidad:* ${datos.cantidad}`;
+      const numeroVentas = "50763794292";
+      window.open(
+        `https://wa.me/${numeroVentas}?text=${encodeURIComponent(msg)}`,
+        "_blank",
+      );
     });
+  }
 
-    updateDots();
-    start();
-  });
+  if (btnEmail) {
+    btnEmail.addEventListener("click", () => {
+      const datos = obtenerDatosForm();
+      if (!datos) return;
 
+      const asunto = `Cotización GS Equipment — ${datos.empresa || datos.nombre}`;
+      const cuerpo = `Solicitud de Cotización — GS Equipment\n--------------------------------------------\nNombre: ${datos.nombre}\nEmpresa: ${datos.empresa}\nTeléfono: ${datos.telefono}\nPaís: ${datos.pais}\nEquipo: ${datos.tipo}\nCantidad: ${datos.cantidad}`;
+      window.location.href = `mailto:ventas@transportegs.com?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+    });
+  }
 });
