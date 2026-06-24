@@ -1,5 +1,5 @@
 /* =========================================
-   GS EQUIPAMENTO - LANDING PAGE STYLES
+   GS EQUIPMENT - LANDING PAGE STYLES (BATMAN / PRO)
    ========================================= */
 
 :root {
@@ -252,7 +252,6 @@ img {
   z-index: 1;
 }
 
-/* LA CORRECCIÓN ESTÁ AQUÍ: Se eliminó el width: 100% para que no rompa los bordes */
 .hero-faded .hero-grid {
   position: relative;
   z-index: 2;
@@ -359,7 +358,7 @@ img {
   margin-top: 2px;
 }
 
-/* Catálogo de Chasis */
+/* Catálogo de Chasis (CARRUSEL SUPERIOR + FICHAS TEXTO ABAJO) */
 .chasis-section {
   padding: 80px 0;
 }
@@ -385,38 +384,96 @@ img {
   font-size: 16px;
   margin-bottom: 40px;
 }
-.products-grid {
+
+/* Carrusel Nuevo de la Galería */
+.catalog-carousel-wrapper {
+  position: relative;
+  margin-bottom: 40px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-gray-border);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+  background: var(--color-dark);
+}
+.catalog-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+}
+.catalog-carousel::-webkit-scrollbar {
+  display: none;
+}
+.carousel-slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  aspect-ratio: 16/9; /* Formato apaisado para celular */
+  overflow: hidden;
+}
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: zoom-in;
+  transition: transform 0.5s;
+}
+.carousel-slide:hover img {
+  transform: scale(1.05);
+}
+
+/* Botones del Carrusel */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(15, 23, 42, 0.7);
+  color: white;
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+  backdrop-filter: blur(4px);
+}
+.carousel-btn:hover {
+  background: var(--color-red);
+}
+.left-btn {
+  left: 15px;
+}
+.right-btn {
+  right: 15px;
+}
+
+/* Grid de las Fichas (Cards sin imagen) */
+.products-grid.text-cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 24px;
 }
 .product-card {
   border: 1px solid var(--color-gray-border);
+  border-top: 4px solid var(--color-dark); /* Línea de acento estilo ficha técnica */
   background: #fff;
   display: flex;
   flex-direction: column;
   transition: 0.3s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
 }
 .product-card:hover {
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
   transform: translateY(-5px);
-}
-.product-img {
-  aspect-ratio: 4/3;
-  overflow: hidden;
-  background: #f8fafc;
-}
-.product-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s;
-}
-.product-card:hover .product-img img {
-  transform: scale(1.05);
+  border-top-color: var(--color-red);
 }
 .product-content {
-  padding: 20px;
+  padding: 30px 20px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -424,14 +481,15 @@ img {
 .product-content h3 {
   font-family: var(--font-heading);
   font-weight: 800;
-  font-size: 15px;
+  font-size: 16px;
   color: var(--color-dark);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 .product-content p {
-  font-size: 13px;
-  margin-bottom: 20px;
+  font-size: 14px;
+  margin-bottom: 24px;
   flex-grow: 1;
+  color: var(--color-text);
 }
 .link-arrow {
   font-family: var(--font-heading);
@@ -638,13 +696,13 @@ img {
 #image-modal {
   display: flex;
   position: fixed;
-  z-index: 9999; /* Por encima de todo */
+  z-index: 9999;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(11, 17, 32, 0.9); /* Fondo oscuro transparente */
-  backdrop-filter: blur(5px); /* Desenfoque elegante */
+  background-color: rgba(11, 17, 32, 0.9);
+  backdrop-filter: blur(5px);
   justify-content: center;
   align-items: center;
   opacity: 1;
@@ -656,7 +714,6 @@ img {
   opacity: 0;
 }
 
-/* La imagen expandida */
 .modal-content {
   max-width: 90%;
   max-height: 85vh;
@@ -671,7 +728,6 @@ img {
   transform: scale(1);
 }
 
-/* El botón de la X para cerrar */
 .modal-close {
   position: absolute;
   top: 20px;
@@ -687,11 +743,6 @@ img {
   color: var(--color-red);
 }
 
-/* Agrega el cursor de "Lupa" a las fotos del catálogo */
-.product-img img {
-  cursor: zoom-in;
-}
-
 /* =========================================
    RESPONSIVE MÓVIL Y TABLET
    ========================================= */
@@ -703,7 +754,6 @@ img {
     gap: 30px;
   }
   .stats-grid,
-  .products-grid,
   .features-grid,
   .form-grid,
   .form-buttons {
@@ -739,7 +789,7 @@ img {
   }
   .nav-menu.active {
     display: flex;
-    align-items: flex-start; /* Evita que la linea roja cruce toda la pantalla */
+    align-items: flex-start;
   }
   .menu-toggle {
     display: block;
@@ -765,13 +815,10 @@ img {
     gap: 10px;
   }
 
-  /* --- CORRECCIONES HERO MÓVIL (SOBREESCRITURA) --- */
-
+  /* --- CORRECCIONES HERO MÓVIL --- */
   .hero-section {
     padding: 0;
   }
-
-  /* 1. Ajuste de la imagen para que se vea en la parte inferior de la pantalla */
   .hero-faded {
     background-position: center bottom;
     background-size: 140%;
@@ -780,8 +827,6 @@ img {
     align-items: flex-start;
     padding-top: 40px;
   }
-
-  /* 2. Cambiamos el degradado: ahora va de Arriba (Blanco) hacia Abajo (Transparente) */
   .hero-faded::before {
     background: linear-gradient(
       to bottom,
@@ -790,20 +835,15 @@ img {
       rgba(255, 255, 255, 0) 100%
     );
   }
-
-  /* 3. Centramos la cuadrícula y nos aseguramos de que herede su margen */
   .hero-faded .hero-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-
-  /* 4. Apilamos los botones para que no se aplasten */
   .hero-buttons {
     flex-direction: column;
     width: 100%;
     margin-top: 20px;
   }
-
   .hero-buttons a {
     width: 100%;
     text-align: center;
@@ -826,8 +866,6 @@ img {
   .logo-text span {
     font-size: 7.5px;
   }
-
-  /* Reducimos ligeramente el tamaño del texto gigante en pantallas minis */
   .hero-title {
     font-size: 28px;
   }
@@ -844,5 +882,15 @@ img {
   }
   .dark-image {
     min-height: 500px;
+  }
+
+  /* Ajuste para que el carrusel muestre 4 imágenes a la vez en PC */
+  .carousel-slide {
+    flex: 0 0 25%;
+    aspect-ratio: 4/3;
+  }
+  /* Ajuste para que las tarjetas de texto queden en 4 columnas */
+  .products-grid.text-cards {
+    grid-template-columns: repeat(4, 1fr);
   }
 }

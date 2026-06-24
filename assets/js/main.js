@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const datos = obtenerDatosForm();
       if (!datos) return;
 
-      const msg = `*Solicitud de Cotización — GS Equipamento*\n\n👤 *Nombre:* ${datos.nombre}\n🏢 *Empresa:* ${datos.empresa}\n📞 *Teléfono:* ${datos.telefono}\n🌎 *País:* ${datos.pais}\n📦 *Equipo:* ${datos.tipo}\n🔢 *Cantidad:* ${datos.cantidad}`;
+      const msg = `*Solicitud de Cotización — GS Equipment*\n\n👤 *Nombre:* ${datos.nombre}\n🏢 *Empresa:* ${datos.empresa}\n📞 *Teléfono:* ${datos.telefono}\n🌎 *País:* ${datos.pais}\n📦 *Equipo:* ${datos.tipo}\n🔢 *Cantidad:* ${datos.cantidad}`;
       const numeroVentas = "50763794292";
       window.open(
         `https://wa.me/${numeroVentas}?text=${encodeURIComponent(msg)}`,
@@ -77,23 +77,61 @@ document.addEventListener("DOMContentLoaded", () => {
       const datos = obtenerDatosForm();
       if (!datos) return;
 
-      const asunto = `Cotización GS Equipamento — ${datos.empresa || datos.nombre}`;
-      const cuerpo = `Solicitud de Cotización — GS Equipamento\n--------------------------------------------\nNombre: ${datos.nombre}\nEmpresa: ${datos.empresa}\nTeléfono: ${datos.telefono}\nPaís: ${datos.pais}\nEquipo: ${datos.tipo}\nCantidad: ${datos.cantidad}`;
+      const asunto = `Cotización GS Equipment — ${datos.empresa || datos.nombre}`;
+      const cuerpo = `Solicitud de Cotización — GS Equipment\n--------------------------------------------\nNombre: ${datos.nombre}\nEmpresa: ${datos.empresa}\nTeléfono: ${datos.telefono}\nPaís: ${datos.pais}\nEquipo: ${datos.tipo}\nCantidad: ${datos.cantidad}`;
       window.location.href = `mailto:ventas@transportegs.com?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
     });
   }
 
   // =========================================
-  // 4. LIGHTBOX DE IMÁGENES (EXPANDIR AL CLIC)
+  // 4. LÓGICA DEL NUEVO CARRUSEL DE IMÁGENES
+  // =========================================
+  const catalogCarousel = document.getElementById("catalog-carousel");
+  const leftBtn = document.querySelector(".left-btn");
+  const rightBtn = document.querySelector(".right-btn");
+
+  if (catalogCarousel && leftBtn && rightBtn) {
+    // Al dar clic a la flecha izquierda
+    leftBtn.addEventListener("click", () => {
+      const scrollAmount =
+        catalogCarousel.querySelector(".carousel-slide").clientWidth;
+      catalogCarousel.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+    });
+
+    // Al dar clic a la flecha derecha
+    rightBtn.addEventListener("click", () => {
+      const scrollAmount =
+        catalogCarousel.querySelector(".carousel-slide").clientWidth;
+      catalogCarousel.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    });
+
+    // Auto-reproducción cada 3.5 segundos
+    setInterval(() => {
+      const scrollAmount =
+        catalogCarousel.querySelector(".carousel-slide").clientWidth;
+      // Si ya llegó al final de la barra de desplazamiento, volver al inicio
+      if (
+        catalogCarousel.scrollLeft + catalogCarousel.clientWidth >=
+        catalogCarousel.scrollWidth - 10
+      ) {
+        catalogCarousel.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        catalogCarousel.scrollBy({ left: scrollAmount, behavior: "smooth" });
+      }
+    }, 3500);
+  }
+
+  // =========================================
+  // 5. LIGHTBOX DE IMÁGENES (EXPANDIR AL CLIC)
   // =========================================
   const modal = document.getElementById("image-modal");
   const modalImg = document.getElementById("modal-img");
   const closeBtn = document.querySelector(".modal-close");
-  // Selecciona todas las imágenes dentro de las tarjetas de chasis
-  const expandableImages = document.querySelectorAll(".product-img img");
+
+  // AHORA LAS IMÁGENES EXPANDIBLES ESTÁN ADENTRO DEL CARRUSEL
+  const expandableImages = document.querySelectorAll(".carousel-slide img");
 
   if (modal && modalImg) {
-    // Al dar clic a una foto, quitar la clase oculta y poner la fuente de la imagen
     expandableImages.forEach((img) => {
       img.addEventListener("click", () => {
         modal.classList.remove("modal-hidden");
@@ -101,19 +139,16 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // Cerrar al hacer clic en la "X"
     closeBtn.addEventListener("click", () => {
       modal.classList.add("modal-hidden");
     });
 
-    // Cerrar al hacer clic en lo oscuro (fuera de la imagen)
     modal.addEventListener("click", (e) => {
       if (e.target === modal) {
         modal.classList.add("modal-hidden");
       }
     });
 
-    // Cerrar al presionar la tecla "Escape" en la computadora
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && !modal.classList.contains("modal-hidden")) {
         modal.classList.add("modal-hidden");
