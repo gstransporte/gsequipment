@@ -77,9 +77,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const datos = obtenerDatosForm();
       if (!datos) return;
 
-      const asunto = `Cotización GS Equipment — ${datos.empresa || datos.nombre}`;
+      const asunto = `Cotización GS Equipment — ${
+        datos.empresa || datos.nombre
+      }`;
       const cuerpo = `Solicitud de Cotización — GS Equipment\n--------------------------------------------\nNombre: ${datos.nombre}\nEmpresa: ${datos.empresa}\nTeléfono: ${datos.telefono}\nPaís: ${datos.pais}\nEquipo: ${datos.tipo}\nCantidad: ${datos.cantidad}`;
-      window.location.href = `mailto:ventas@transportegs.com?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+      window.location.href = `mailto:ventas@transportegs.com?subject=${encodeURIComponent(
+        asunto,
+      )}&body=${encodeURIComponent(cuerpo)}`;
     });
   }
 
@@ -122,23 +126,45 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================
-  // 5. LIGHTBOX DE IMÁGENES (EXPANDIR AL CLIC)
+  // 5. LIGHTBOX DE IMÁGENES (EXPANDIR, SWIPE Y TECLADO)
   // =========================================
   const modal = document.getElementById("image-modal");
   const modalImg = document.getElementById("modal-img");
   const closeBtn = document.querySelector(".modal-close");
+  const modalPrevBtn = document.getElementById("modal-prev-btn");
+  const modalNextBtn = document.getElementById("modal-next-btn");
 
-  // AHORA LAS IMÁGENES EXPANDIBLES ESTÁN ADENTRO DEL CARRUSEL
-  const expandableImages = document.querySelectorAll(".carousel-slide img");
+  const carouselImages = document.querySelectorAll(".catalog-carousel img");
+  let currentImageIndex = 0;
 
   if (modal && modalImg) {
-    expandableImages.forEach((img) => {
+    // --- Funciones de navegación ---
+    function showModalImage(index) {
+      currentImageIndex = index;
+      const img = carouselImages[currentImageIndex];
+      modalImg.src = img.src;
+      modal.classList.remove("modal-hidden");
+    }
+
+    function showNextImage() {
+      let newIndex = (currentImageIndex + 1) % carouselImages.length;
+      showModalImage(newIndex);
+    }
+
+    function showPrevImage() {
+      let newIndex =
+        (currentImageIndex - 1 + carouselImages.length) % carouselImages.length;
+      showModalImage(newIndex);
+    }
+
+    // Abrir al dar clic en la miniatura
+    carouselImages.forEach((img, index) => {
       img.addEventListener("click", () => {
-        modal.classList.remove("modal-hidden");
-        modalImg.src = img.src;
+        showModalImage(index);
       });
     });
 
+    // --- Controles de Cierre ---
     closeBtn.addEventListener("click", () => {
       modal.classList.add("modal-hidden");
     });
@@ -149,10 +175,58 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    // --- Controles de Botones ---
+    modalPrevBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showPrevImage();
+    });
+
+    modalNextBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showNextImage();
+    });
+
+    // --- Controles de Teclado (PC) ---
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && !modal.classList.contains("modal-hidden")) {
-        modal.classList.add("modal-hidden");
+      if (!modal.classList.contains("modal-hidden")) {
+        if (e.key === "Escape") modal.classList.add("modal-hidden");
+        if (e.key === "ArrowRight") showNextImage();
+        if (e.key === "ArrowLeft") showPrevImage();
       }
     });
+
+    // --- CONTROLES TÁCTILES (SWIPE PARA MÓVIL) ---
+    let touchstartX = 0;
+    let touchendX = 0;
+
+    modal.addEventListener(
+      "touchstart",
+      (e) => {
+        touchstartX = e.changedTouches[0].screenX;
+      },
+      { passive: true },
+    );
+
+    modal.addEventListener(
+      "touchend",
+      (e) => {
+        touchendX = e.changedTouches[0].screenX;
+        handleSwipeGesture();
+      },
+      { passive: true },
+    );
+
+    function handleSwipeGesture() {
+      const swipeThreshold = 50; // Distancia mínima para que sea considerado un deslizamiento
+
+      if (touchendX < touchstartX - swipeThreshold) {
+        // Deslizó hacia la izquierda
+        showNextImage();
+      }
+      if (touchendX > touchstartX + swipeThreshold) {
+        // Deslizó hacia la derecha
+        showPrevImage();
+      }
+    }
   }
 });

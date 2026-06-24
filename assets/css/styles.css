@@ -1,5 +1,5 @@
 /* =========================================
-   GS EQUIPMENT - LANDING PAGE STYLES (BATMAN / PRO)
+   GS EQUIPMENT - LANDING PAGE STYLES
    ========================================= */
 
 :root {
@@ -123,7 +123,7 @@ img {
 }
 
 /* =========================================
-   NUEVO NAVBAR SUPERIOR (ESTILO MOCKUP PRO)
+   NUEVO NAVBAR SUPERIOR
    ========================================= */
 .navbar {
   background: #fff;
@@ -358,7 +358,7 @@ img {
   margin-top: 2px;
 }
 
-/* Catálogo de Chasis (CARRUSEL SUPERIOR + FICHAS TEXTO ABAJO) */
+/* Catálogo de Chasis */
 .chasis-section {
   padding: 80px 0;
 }
@@ -385,7 +385,7 @@ img {
   margin-bottom: 40px;
 }
 
-/* Carrusel Nuevo de la Galería */
+/* Carrusel de la Galería */
 .catalog-carousel-wrapper {
   position: relative;
   margin-bottom: 40px;
@@ -409,7 +409,7 @@ img {
 .carousel-slide {
   flex: 0 0 100%;
   scroll-snap-align: start;
-  aspect-ratio: 16/9; /* Formato apaisado para celular */
+  aspect-ratio: 16/9;
   overflow: hidden;
 }
 .carousel-slide img {
@@ -452,7 +452,7 @@ img {
   right: 15px;
 }
 
-/* Grid de las Fichas (Cards sin imagen) */
+/* Grid de las Fichas */
 .products-grid.text-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -460,7 +460,7 @@ img {
 }
 .product-card {
   border: 1px solid var(--color-gray-border);
-  border-top: 4px solid var(--color-dark); /* Línea de acento estilo ficha técnica */
+  border-top: 4px solid var(--color-dark);
   background: #fff;
   display: flex;
   flex-direction: column;
@@ -502,7 +502,7 @@ img {
   color: var(--color-red);
 }
 
-/* Dark Section - Efecto Batman */
+/* Dark Section */
 .dark-section {
   background: var(--color-dark);
   color: #fff;
@@ -744,6 +744,105 @@ img {
 }
 
 /* =========================================
+   LIGHTBOX / VISOR DE IMÁGENES (CLICK)
+   ========================================= */
+#image-modal {
+  display: flex;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(11, 17, 32, 0.9);
+  backdrop-filter: blur(5px);
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+#image-modal.modal-hidden {
+  display: none;
+  opacity: 0;
+}
+
+.modal-content {
+  max-width: 90%;
+  max-height: 85vh;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+  object-fit: contain;
+}
+
+#image-modal:not(.modal-hidden) .modal-content {
+  transform: scale(1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  color: white;
+  font-size: 45px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: var(--color-red);
+}
+
+/* Botones de Navegación del Modal */
+.modal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(15, 23, 42, 0.7);
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.3s,
+    transform 0.3s;
+  backdrop-filter: blur(4px);
+  font-size: 20px;
+}
+
+.modal-nav:hover {
+  background: var(--color-red);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.modal-nav.prev {
+  left: 30px;
+}
+
+.modal-nav.next {
+  right: 30px;
+}
+
+/* Responsive para los botones del modal */
+@media (max-width: 768px) {
+  .modal-nav {
+    width: 40px;
+    height: 40px;
+    left: 15px;
+    right: 15px;
+  }
+}
+
+/* =========================================
    RESPONSIVE MÓVIL Y TABLET
    ========================================= */
 @media (max-width: 992px) {
@@ -815,7 +914,7 @@ img {
     gap: 10px;
   }
 
-  /* --- CORRECCIONES HERO MÓVIL --- */
+  /* --- HERO MÓVIL --- */
   .hero-section {
     padding: 0;
   }
@@ -884,12 +983,10 @@ img {
     min-height: 500px;
   }
 
-  /* Ajuste para que el carrusel muestre 4 imágenes a la vez en PC */
   .carousel-slide {
     flex: 0 0 25%;
     aspect-ratio: 4/3;
   }
-  /* Ajuste para que las tarjetas de texto queden en 4 columnas */
   .products-grid.text-cards {
     grid-template-columns: repeat(4, 1fr);
   }
