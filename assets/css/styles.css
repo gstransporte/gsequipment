@@ -645,7 +645,9 @@ img {
   margin-top: 10px;
 }
 
-/* Footer con SVG */
+/* =========================================
+   FOOTER CON SVG
+   ========================================= */
 .mockup-footer {
   padding: 30px 0;
   background: #fff;
@@ -672,11 +674,14 @@ img {
 }
 .footer-contact span {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: left;
 }
 .footer-contact svg {
   color: var(--color-red);
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 /* Animaciones Reveal */
@@ -801,7 +806,6 @@ img {
     padding-bottom: 20px;
   }
 
-  /* Ajustes Navbar Móvil para evitar colisiones */
   .nav-logo img {
     height: 38px;
   }
@@ -841,14 +845,40 @@ img {
     align-items: flex-start;
     gap: 20px;
   }
+
   .footer-flex {
     flex-direction: column;
-    gap: 20px;
+    gap: 30px;
     text-align: center;
   }
+
+  .footer-logo {
+    justify-content: center;
+  }
+
   .footer-contact {
     flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    width: 100%;
+  }
+
+  .footer-contact span {
+    display: flex;
+    flex-direction: row; 
+    align-items: flex-start;
+    text-align: left; 
     gap: 10px;
+    width: 100%;
+    max-width: 320px; 
+    margin: 0 auto;
+  }
+
+  .footer-contact svg {
+    margin-top: 2px; 
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
   }
 
   /* --- HERO MÓVIL --- */
